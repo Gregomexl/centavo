@@ -101,8 +101,4 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ## Author
 
-Greg Gomez
-
----
-
-*Built with ❤️ using modern Python and React best practices*
+Gregory Onasis Gomez
