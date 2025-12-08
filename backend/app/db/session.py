@@ -24,15 +24,13 @@ async_session_maker = async_sessionmaker(
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
-    """Dependency for getting async database sessions.
-
-    Note: Sessions should be committed explicitly in the route handler
-    or service layer. This dependency only handles session lifecycle.
-    The session is automatically closed when the context manager exits.
-    """
+    """Dependency for getting async database sessions."""
     async with async_session_maker() as session:
         try:
             yield session
+            await session.commit()
         except Exception:
             await session.rollback()
             raise
+        finally:
+            await session.close()

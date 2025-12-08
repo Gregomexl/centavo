@@ -1,16 +1,14 @@
 """FastAPI application entry point."""
 
-import logging
 from contextlib import asynccontextmanager
 from collections.abc import AsyncGenerator
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.v1.router import router as api_v1_router
 from app.config import get_settings
-from app.db.session import engine
 
-logger = logging.getLogger(__name__)
 settings = get_settings()
 
 
@@ -18,12 +16,10 @@ settings = get_settings()
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Application lifespan events."""
     # Startup
-    logger.info("Application starting up", extra={"app_name": settings.app_name})
+    print(f"🚀 {settings.app_name} starting up...")
     yield
     # Shutdown
-    logger.info("Disposing database engine")
-    await engine.dispose()
-    logger.info("Application shut down complete", extra={"app_name": settings.app_name})
+    print(f"👋 {settings.app_name} shutting down...")
 
 
 # Create FastAPI app
@@ -40,23 +36,12 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization", "Accept"],
-    expose_headers=["Content-Length", "Content-Type"],
-    max_age=600,  # Cache preflight requests for 10 minutes
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-
-# Add security headers middleware
-@app.middleware("http")
-async def add_security_headers(request: Request, call_next):
-    """Add security headers to all responses."""
-    response = await call_next(request)
-    response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["X-Frame-Options"] = "DENY"
-    response.headers["X-XSS-Protection"] = "1; mode=block"
-    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
-    return response
+# Include API router
+app.include_router(api_v1_router, prefix="/api")
 
 
 @app.get("/health")
