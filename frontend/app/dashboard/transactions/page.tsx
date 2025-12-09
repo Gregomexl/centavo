@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api-client';
+import { toast } from 'sonner';
+import { Skeleton } from '@/components/ui/skeleton';
 import type { Transaction, PaginatedResponse, Category } from '@/lib/types';
 
 export default function TransactionsPage() {
@@ -63,8 +65,10 @@ export default function TransactionsPage() {
                 transaction_date: new Date().toISOString().split('T')[0],
             });
             fetchTransactions();
+            toast.success('Transaction created successfully');
         } catch (error) {
             console.error('Failed to create transaction:', error);
+            toast.error('Failed to create transaction');
         }
     };
 
@@ -74,15 +78,28 @@ export default function TransactionsPage() {
         try {
             await apiClient.delete(`/api/v1/transactions/${id}`);
             fetchTransactions();
+            toast.success('Transaction deleted');
         } catch (error) {
             console.error('Failed to delete transaction:', error);
+            toast.error('Failed to delete transaction');
         }
     };
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+            <div className="space-y-6">
+                <div className="flex justify-between items-center">
+                    <div>
+                        <Skeleton className="h-10 w-48 mb-2" />
+                        <Skeleton className="h-5 w-64" />
+                    </div>
+                    <Skeleton className="h-12 w-40 rounded-lg" />
+                </div>
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
+                    {[1, 2, 3, 4, 5].map((i) => (
+                        <Skeleton key={i} className="h-20 w-full rounded-lg" />
+                    ))}
+                </div>
             </div>
         );
     }
