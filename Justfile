@@ -25,16 +25,20 @@ stop:
 
 # Kill backend server process
 kill-backend:
-    @echo "Killing uvicorn processes..."
-    @pkill -9 -f uvicorn || echo "No uvicorn processes found"
-    @pkill -9 -f "uv run uvicorn" || true
+    @echo "Killing backend processes..."
+    @pkill -9 -f "uvicorn app.main:app" 2>/dev/null || true
+    @pkill -9 -f "uvicorn" 2>/dev/null || true
+    @pkill -9 -f "uv run uvicorn" 2>/dev/null || true
+    @lsof -ti:8000 | xargs kill -9 2>/dev/null || true
     @echo "✓ Backend processes killed"
 
 # Kill all development processes
 kill-all:
     @echo "Killing all development processes..."
-    @pkill -9 uvicorn || echo "No uvicorn processes found"
-    @pkill -9 node || echo "No node processes found"
+    @pkill -9 -f "uvicorn" 2>/dev/null || true
+    @pkill -9 -f "node" 2>/dev/null || true
+    @lsof -ti:8000 | xargs kill -9 2>/dev/null || true
+    @lsof -ti:3000 | xargs kill -9 2>/dev/null || true
     @echo "✓ All development processes killed"
 
 # Database Commands
@@ -53,7 +57,7 @@ db-create-migration name:
 
 # Seed default categories
 db-seed:
-    cd backend && uv run python scripts/seed-categories.py
+    cd backend && PYTHONPATH=. uv run python ../scripts/seed_categories.py
 
 # Testing Commands
 

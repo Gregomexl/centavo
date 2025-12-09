@@ -4,20 +4,20 @@ import uuid
 from datetime import date, datetime
 from decimal import Decimal
 
-from pydantic import BaseModel, ConfigDict, Field
+import pydantic
 
 from app.models.transaction import TransactionType
 
 
-class TransactionBase(BaseModel):
+class TransactionBase(pydantic.BaseModel):
     """Base transaction schema."""
 
     type: TransactionType
-    amount: Decimal = Field(..., gt=0, decimal_places=2)
-    currency: str = Field(default="MXN", min_length=3, max_length=3)
-    description: str = Field(..., min_length=1, max_length=500)
+    amount: Decimal = pydantic.Field(..., gt=0, decimal_places=2)
+    currency: str = pydantic.Field(default="MXN", min_length=3, max_length=3)
+    description: str = pydantic.Field(..., min_length=1, max_length=500)
     category_id: uuid.UUID | None = None
-    transaction_date: date = Field(default_factory=date.today)
+    transaction_date: date = pydantic.Field(default_factory=date.today)
 
 
 class TransactionCreate(TransactionBase):
@@ -29,7 +29,7 @@ class TransactionCreate(TransactionBase):
 class TransactionRead(TransactionBase):
     """Schema for reading a transaction."""
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = pydantic.ConfigDict(from_attributes=True)
 
     id: uuid.UUID
     user_id: uuid.UUID
@@ -37,12 +37,12 @@ class TransactionRead(TransactionBase):
     updated_at: datetime
 
 
-class TransactionUpdate(BaseModel):
+class TransactionUpdate(pydantic.BaseModel):
     """Schema for updating a transaction."""
 
     type: TransactionType | None = None
-    amount: Decimal | None = Field(None, gt=0, decimal_places=2)
-    currency: str | None = Field(None, min_length=3, max_length=3)
-    description: str | None = Field(None, min_length=1, max_length=500)
+    amount: Decimal | None = pydantic.Field(None, gt=0, decimal_places=2)
+    currency: str | None = pydantic.Field(None, min_length=3, max_length=3)
+    description: str | None = pydantic.Field(None, min_length=1, max_length=500)
     category_id: uuid.UUID | None = None
     transaction_date: date | None = None

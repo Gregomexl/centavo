@@ -3,34 +3,34 @@
 import uuid
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
+import pydantic
 
 
-class UserBase(BaseModel):
+class UserBase(pydantic.BaseModel):
     """Base user schema."""
 
-    email: EmailStr | None = None
-    display_name: str = Field(..., min_length=1, max_length=100)
-    default_currency: str = Field(default="MXN", min_length=3, max_length=3)
+    email: pydantic.EmailStr | None = None
+    display_name: str = pydantic.Field(..., min_length=1, max_length=100)
+    default_currency: str = pydantic.Field(default="MXN", min_length=3, max_length=3)
 
 
 class UserCreate(UserBase):
     """Schema for creating a user."""
 
-    password: str = Field(..., min_length=8, max_length=100)
+    password: str = pydantic.Field(..., min_length=8, max_length=100)
 
 
-class UserLogin(BaseModel):
+class UserLogin(pydantic.BaseModel):
     """Schema for user login."""
 
-    email: EmailStr
+    email: pydantic.EmailStr
     password: str
 
 
 class UserRead(UserBase):
     """Schema for reading a user."""
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = pydantic.ConfigDict(from_attributes=True)
 
     id: uuid.UUID
     telegram_id: int | None
@@ -39,15 +39,15 @@ class UserRead(UserBase):
     updated_at: datetime
 
 
-class UserUpdate(BaseModel):
+class UserUpdate(pydantic.BaseModel):
     """Schema for updating a user."""
 
-    email: EmailStr | None = None
-    display_name: str | None = Field(None, min_length=1, max_length=100)
-    default_currency: str | None = Field(None, min_length=3, max_length=3)
+    email: pydantic.EmailStr | None = None
+    display_name: str | None = pydantic.Field(None, min_length=1, max_length=100)
+    default_currency: str | None = pydantic.Field(None, min_length=3, max_length=3)
 
 
-class Token(BaseModel):
+class Token(pydantic.BaseModel):
     """Token schema."""
 
     access_token: str
@@ -55,7 +55,7 @@ class Token(BaseModel):
     token_type: str = "bearer"
 
 
-class TokenPayload(BaseModel):
+class TokenPayload(pydantic.BaseModel):
     """Token payload schema."""
 
     sub: str | None = None  # subject (user_id)

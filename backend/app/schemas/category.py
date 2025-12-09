@@ -3,17 +3,17 @@
 import uuid
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, Field
+import pydantic
 
 from app.models.transaction import TransactionType
 
 
-class CategoryBase(BaseModel):
+class CategoryBase(pydantic.BaseModel):
     """Base category schema."""
 
-    name: str = Field(..., min_length=1, max_length=50)
-    icon: str = Field(default="📦", max_length=50)
-    color: str = Field(default="#6366f1", pattern=r"^#[0-9A-Fa-f]{6}$")
+    name: str = pydantic.Field(..., min_length=1, max_length=50)
+    icon: str = pydantic.Field(default="📦", max_length=50)
+    color: str = pydantic.Field(default="#6366f1", pattern=r"^#[0-9A-Fa-f]{6}$")
     type: TransactionType
 
 
@@ -26,7 +26,7 @@ class CategoryCreate(CategoryBase):
 class CategoryRead(CategoryBase):
     """Schema for reading a category."""
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = pydantic.ConfigDict(from_attributes=True)
 
     id: uuid.UUID
     user_id: uuid.UUID | None
@@ -35,9 +35,9 @@ class CategoryRead(CategoryBase):
     updated_at: datetime
 
 
-class CategoryUpdate(BaseModel):
+class CategoryUpdate(pydantic.BaseModel):
     """Schema for updating a category."""
 
-    name: str | None = Field(None, min_length=1, max_length=50)
-    icon: str | None = Field(None, max_length=50)
-    color: str | None = Field(None, pattern=r"^#[0-9A-Fa-f]{6}$")
+    name: str | None = pydantic.Field(None, min_length=1, max_length=50)
+    icon: str | None = pydantic.Field(None, max_length=50)
+    color: str | None = pydantic.Field(None, pattern=r"^#[0-9A-Fa-f]{6}$")

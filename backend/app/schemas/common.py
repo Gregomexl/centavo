@@ -2,22 +2,22 @@
 
 from typing import Generic, TypeVar
 
-from pydantic import BaseModel, Field
+import pydantic
 
 T = TypeVar("T")
 
 
-class PaginatedResponse(BaseModel, Generic[T]):
+class PaginatedResponse(pydantic.BaseModel, Generic[T]):
     """Paginated response schema."""
 
     items: list[T]
     total: int
-    page: int = Field(..., ge=1)
-    page_size: int = Field(..., ge=1, le=100)
+    page: int = pydantic.Field(..., ge=1)
+    page_size: int = pydantic.Field(..., ge=1, le=100)
     total_pages: int
 
 
-class MessageResponse(BaseModel):
+class MessageResponse(pydantic.BaseModel):
     """Simple message response."""
 
     message: str
