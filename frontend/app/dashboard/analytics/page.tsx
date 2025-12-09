@@ -58,9 +58,9 @@ export default function AnalyticsPage() {
             }
 
             if (t.type === 'income') {
-                monthlyData[monthKey].income += t.amount;
+                monthlyData[monthKey].income += Number(t.amount);
             } else {
-                monthlyData[monthKey].expense += t.amount;
+                monthlyData[monthKey].expense += Number(t.amount);
             }
         });
 
@@ -75,7 +75,7 @@ export default function AnalyticsPage() {
         expenses.forEach(t => {
             const cat = categories.find(c => c.id === t.category_id);
             const name = cat ? cat.name : 'Uncategorized';
-            categoryTotals[name] = (categoryTotals[name] || 0) + t.amount;
+            categoryTotals[name] = (categoryTotals[name] || 0) + Number(t.amount);
         });
 
         return Object.entries(categoryTotals)
@@ -104,7 +104,7 @@ export default function AnalyticsPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Income vs Expenses */}
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <h2 className="text-xl font-semibold mb-6">Income vs Expenses</h2>
+                    <h2 className="text-xl font-semibold mb-6 text-gray-900">Income vs Expenses</h2>
                     <div className="h-80 w-full">
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={monthlyData}>
@@ -112,7 +112,7 @@ export default function AnalyticsPage() {
                                 <XAxis dataKey="name" axisLine={false} tickLine={false} />
                                 <YAxis axisLine={false} tickLine={false} tickFormatter={(value) => `$${value}`} />
                                 <Tooltip
-                                    formatter={(value: number) => [`$${value.toFixed(2)}`, '']}
+                                    formatter={(value: number) => [`$${Number(value).toFixed(2)}`, '']}
                                     contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                                 />
                                 <Legend />
@@ -125,7 +125,7 @@ export default function AnalyticsPage() {
 
                 {/* Category Breakdown */}
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <h2 className="text-xl font-semibold mb-6">Expense Breakdown</h2>
+                    <h2 className="text-xl font-semibold mb-6 text-gray-900">Expense Breakdown</h2>
                     <div className="h-80 w-full flex justify-center">
                         {categoryData.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
@@ -143,7 +143,7 @@ export default function AnalyticsPage() {
                                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                         ))}
                                     </Pie>
-                                    <Tooltip formatter={(value: number) => `$${value.toFixed(2)}`} />
+                                    <Tooltip formatter={(value: number) => `$${Number(value).toFixed(2)}`} />
                                     <Legend />
                                 </PieChart>
                             </ResponsiveContainer>
@@ -157,7 +157,7 @@ export default function AnalyticsPage() {
 
                 {/* Balance Trend */}
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 lg:col-span-2">
-                    <h2 className="text-xl font-semibold mb-6">Balance Trend</h2>
+                    <h2 className="text-xl font-semibold mb-6 text-gray-900">Balance Trend</h2>
                     <div className="h-80 w-full">
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={monthlyData}>
@@ -165,7 +165,7 @@ export default function AnalyticsPage() {
                                 <XAxis dataKey="name" axisLine={false} tickLine={false} />
                                 <YAxis axisLine={false} tickLine={false} tickFormatter={(value) => `$${value}`} />
                                 <Tooltip
-                                    formatter={(value: number) => [`$${value.toFixed(2)}`, '']}
+                                    formatter={(value: number) => [`$${Number(value).toFixed(2)}`, '']}
                                     contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                                 />
                                 <Legend />

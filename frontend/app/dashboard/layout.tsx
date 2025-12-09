@@ -76,6 +76,9 @@ export default function DashboardLayout({
                                 <Link href="/dashboard/categories" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">
                                     Categories
                                 </Link>
+                                <Link href="/dashboard/settings" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">
+                                    Settings
+                                </Link>
                             </div>
                         </div>
 

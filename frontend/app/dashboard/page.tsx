@@ -62,7 +62,7 @@ export default function DashboardPage() {
                 transactions.forEach((t: Transaction) => {
                     const date = new Date(t.transaction_date).toLocaleDateString();
                     // Net amount
-                    const amount = t.type === 'income' ? t.amount : -t.amount;
+                    const amount = t.type === 'income' ? Number(t.amount) : -Number(t.amount);
                     dailyData[date] = (dailyData[date] || 0) + amount;
                 });
 

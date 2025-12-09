@@ -14,6 +14,7 @@ from telegram.ext import (
     filters,
 )
 
+from app.bot.handlers.link import link_command
 from app.bot.parsers import ExpenseParser
 from app.bot.services import BotService
 from app.config import get_settings
@@ -392,8 +393,15 @@ def create_application() -> Application:
     if not settings.telegram_bot_token:
         raise ValueError("TELEGRAM_BOT_TOKEN is not set in environment")
     
-    # Create application
-    application = Application.builder().token(settings.telegram_bot_token).build()
+    # Create application with increased timeouts
+    application = (
+        Application.builder()
+        .token(settings.telegram_bot_token)
+        .read_timeout(30)
+        .write_timeout(30)
+        .connect_timeout(30)
+        .build()
+    )
     
     # Add command handlers
     application.add_handler(CommandHandler("start", start_command))
@@ -401,6 +409,7 @@ def create_application() -> Application:
     application.add_handler(CommandHandler("report", report_command))
     application.add_handler(CommandHandler("categories", categories_command))
     application.add_handler(CommandHandler("settings", settings_command))
+    application.add_handler(CommandHandler("link", link_command))
     
     # Add callback query handler for category selection
     application.add_handler(CallbackQueryHandler(category_callback, pattern=r"^cat_"))
