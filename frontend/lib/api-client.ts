@@ -43,21 +43,31 @@ class ApiClient {
             headers['Authorization'] = `Bearer ${this.token}`;
         }
 
-        const response = await fetch(`${this.baseUrl}${endpoint}`, {
-            ...options,
-            headers,
-        });
+        try {
+            const response = await fetch(`${this.baseUrl}${endpoint}`, {
+                ...options,
+                headers,
+            });
 
-        if (!response.ok) {
-            const error = await response.json().catch(() => ({}));
-            throw new ApiError(
-                error.detail || 'An error occurred',
-                response.status,
-                error
+            if (!response.ok) {
+                const error = await response.json().catch(() => ({}));
+                throw new ApiError(
+                    error.detail || 'An error occurred',
+                    response.status,
+                    error
+                );
+            }
+
+            return response.json();
+        } catch (error: any) {
+            if (error instanceof ApiError) {
+                throw error;
+            }
+            // Handle network errors (like "Load failed")
+            throw new Error(
+                'Unable to connect to server. Please check if the backend is running.'
             );
         }
-
-        return response.json();
     }
 
     async get<T>(endpoint: string): Promise<T> {
