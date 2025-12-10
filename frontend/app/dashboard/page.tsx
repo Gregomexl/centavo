@@ -24,43 +24,43 @@ export default function DashboardPage() {
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(true);
 
+    const fetchDashboardData = async () => {
+        try {
+            // Fetch transactions
+            const response = await apiClient.get<any>('/api/v1/transactions?page=1&page_size=100');
+            const transactions = response.items || [];
+
+            // Fetch categories
+            const categoriesResponse = await apiClient.get<Category[]>('/api/v1/categories');
+            setCategories(categoriesResponse);
+
+            // Calculate summary
+            const totalExpenses = transactions
+                .filter((t: Transaction) => t.type === 'expense')
+                .reduce((sum: number, t: Transaction) => sum + Number(t.amount), 0);
+
+            const totalIncome = transactions
+                .filter((t: Transaction) => t.type === 'income')
+                .reduce((sum: number, t: Transaction) => sum + Number(t.amount), 0);
+
+            setSummary({
+                total_expenses: totalExpenses,
+                total_income: totalIncome,
+                balance: totalIncome - totalExpenses,
+                transaction_count: transactions.length,
+            });
+
+            // Get recent 5 transactions
+            setRecentTransactions(transactions.slice(0, 5));
+
+        } catch (error) {
+            console.error('Failed to fetch dashboard data:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchDashboardData = async () => {
-            try {
-                // Fetch transactions
-                const response = await apiClient.get<any>('/api/v1/transactions?page=1&page_size=100');
-                const transactions = response.items || [];
-
-                // Fetch categories
-                const categoriesResponse = await apiClient.get<Category[]>('/api/v1/categories');
-                setCategories(categoriesResponse);
-
-                // Calculate summary
-                const totalExpenses = transactions
-                    .filter((t: Transaction) => t.type === 'expense')
-                    .reduce((sum: number, t: Transaction) => sum + Number(t.amount), 0);
-
-                const totalIncome = transactions
-                    .filter((t: Transaction) => t.type === 'income')
-                    .reduce((sum: number, t: Transaction) => sum + Number(t.amount), 0);
-
-                setSummary({
-                    total_expenses: totalExpenses,
-                    total_income: totalIncome,
-                    balance: totalIncome - totalExpenses,
-                    transaction_count: transactions.length,
-                });
-
-                // Get recent 5 transactions
-                setRecentTransactions(transactions.slice(0, 5));
-
-            } catch (error) {
-                console.error('Failed to fetch dashboard data:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchDashboardData();
     }, []);
 
@@ -149,7 +149,13 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Budget Overview */}
-                <BudgetWidget categories={categories} transactions={recentTransactions} />
+                <BudgetWidget
+                    categories={categories}
+                    transactions={recentTransactions}
+                    onBudgetUpdate={() => {
+                        fetchDashboardData();
+                    }}
+                />
             </div>
         </div>
     );

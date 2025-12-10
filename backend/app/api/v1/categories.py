@@ -89,7 +89,7 @@ async def update_category(
     current_user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> CategoryRead:
-    """Update a custom category (system categories cannot be updated)."""
+    """Update a custom category (system categories can only update monthly_limit)."""
     category_repo = CategoryRepository(db)
     
     # Get category
@@ -97,16 +97,20 @@ async def update_category(
     if not category:
         raise NotFoundException("Category not found")
     
-    # Cannot update system categories
-    if category.is_system:
-        raise ForbiddenException("Cannot modify system categories")
+    # Parse update data
+    update_data = category_data.model_dump(exclude_unset=True)
     
-    # Cannot update if not owner
-    if category.user_id != current_user.id:
-        raise ForbiddenException("Cannot modify other users' categories")
+    # If system category, only allow monthly_limit updates
+    if category.is_system:
+        # Only monthly_limit can be updated for system categories
+        if any(key != 'monthly_limit' for key in update_data.keys()):
+            raise ForbiddenException("System categories can only update monthly_limit")
+    else:
+        # Cannot update if not owner (for custom categories)
+        if category.user_id != current_user.id:
+            raise ForbiddenException("Cannot modify other users' categories")
     
     # Update fields
-    update_data = category_data.model_dump(exclude_unset=True)
     for field, value in update_data.items():
         setattr(category, field, value)
     
