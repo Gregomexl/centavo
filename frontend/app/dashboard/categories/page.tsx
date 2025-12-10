@@ -76,34 +76,34 @@ export default function CategoriesPage() {
     const incomeCategories = categories.filter((c) => c.type === 'income');
 
     return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
+        <div className="space-y-6 md:space-y-8">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Categories</h1>
-                    <p className="text-gray-600 mt-1">Manage your transaction categories</p>
+                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Categories</h1>
+                    <p className="text-sm md:text-base text-gray-600 mt-1">Manage your transaction categories</p>
                 </div>
                 <button
                     onClick={() => setShowAddModal(true)}
-                    className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700 transition-all"
+                    className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700 active:from-indigo-800 active:to-purple-800 transition-all"
                 >
                     + Add Category
                 </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 {/* Expense Categories */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Expense Categories</h2>
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
+                    <h2 className="text-lg md:text-xl font-semibold text-gray-900 mb-4">Expense Categories</h2>
                     <div className="space-y-2">
                         {expenseCategories.map((category) => (
                             <div
                                 key={category.id}
-                                className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50"
+                                className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 active:bg-gray-100"
                             >
                                 <div className="flex items-center space-x-3">
-                                    <span className="text-2xl">{category.icon}</span>
+                                    <span className="text-xl md:text-2xl">{category.icon}</span>
                                     <div>
-                                        <p className="font-medium text-gray-900">{category.name}</p>
+                                        <p className="font-medium text-gray-900 text-sm md:text-base">{category.name}</p>
                                         {category.is_system && (
                                             <p className="text-xs text-gray-500">System</p>
                                         )}
@@ -112,7 +112,8 @@ export default function CategoriesPage() {
                                 {!category.is_system && (
                                     <button
                                         onClick={() => handleDelete(category.id, category.is_system)}
-                                        className="text-red-600 hover:text-red-700 p-2"
+                                        className="text-red-600 hover:text-red-700 active:text-red-800 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
+                                        aria-label="Delete category"
                                     >
                                         🗑️
                                     </button>
@@ -123,18 +124,18 @@ export default function CategoriesPage() {
                 </div>
 
                 {/* Income Categories */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Income Categories</h2>
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
+                    <h2 className="text-lg md:text-xl font-semibold text-gray-900 mb-4">Income Categories</h2>
                     <div className="space-y-2">
                         {incomeCategories.map((category) => (
                             <div
                                 key={category.id}
-                                className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50"
+                                className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 active:bg-gray-100"
                             >
                                 <div className="flex items-center space-x-3">
-                                    <span className="text-2xl">{category.icon}</span>
+                                    <span className="text-xl md:text-2xl">{category.icon}</span>
                                     <div>
-                                        <p className="font-medium text-gray-900">{category.name}</p>
+                                        <p className="font-medium text-gray-900 text-sm md:text-base">{category.name}</p>
                                         {category.is_system && (
                                             <p className="text-xs text-gray-500">System</p>
                                         )}
@@ -143,7 +144,8 @@ export default function CategoriesPage() {
                                 {!category.is_system && (
                                     <button
                                         onClick={() => handleDelete(category.id, category.is_system)}
-                                        className="text-red-600 hover:text-red-700 p-2"
+                                        className="text-red-600 hover:text-red-700 active:text-red-800 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
+                                        aria-label="Delete category"
                                     >
                                         🗑️
                                     </button>
@@ -156,57 +158,57 @@ export default function CategoriesPage() {
 
             {/* Add Category Modal */}
             {showAddModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                    <div className="bg-white rounded-2xl p-8 max-w-md w-full">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-6">Add Category</h2>
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" onClick={() => setShowAddModal(false)}>
+                    <div className="bg-white rounded-2xl p-4 sm:p-6 md:p-8 max-w-sm sm:max-w-md w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                        <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6">Add Category</h2>
 
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
+                                <label className="block text-sm md:text-base font-medium text-gray-700 mb-2">Name</label>
                                 <input
                                     type="text"
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                     required
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-gray-900 placeholder-gray-500"
+                                    className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-gray-900 placeholder-gray-500"
                                     placeholder="Groceries"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Icon (Emoji)</label>
+                                <label className="block text-sm md:text-base font-medium text-gray-700 mb-2">Icon (Emoji)</label>
                                 <input
                                     type="text"
                                     value={formData.icon}
                                     onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-gray-900 placeholder-gray-500"
+                                    className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-gray-900 placeholder-gray-500"
                                     placeholder="🛒"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
+                                <label className="block text-sm md:text-base font-medium text-gray-700 mb-2">Type</label>
                                 <select
                                     value={formData.type}
                                     onChange={(e) => setFormData({ ...formData, type: e.target.value as 'expense' | 'income' })}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-gray-900 placeholder-gray-500"
+                                    className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-gray-900 placeholder-gray-500"
                                 >
                                     <option value="expense">Expense</option>
                                     <option value="income">Income</option>
                                 </select>
                             </div>
 
-                            <div className="flex space-x-4 pt-4">
+                            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4">
                                 <button
                                     type="button"
                                     onClick={() => setShowAddModal(false)}
-                                    className="flex-1 px-4 py-3 border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 text-gray-700"
+                                    className="w-full sm:flex-1 px-4 py-3 border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 active:bg-gray-100 text-gray-700"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-1 px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700"
+                                    className="w-full sm:flex-1 px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700 active:from-indigo-800 active:to-purple-800"
                                 >
                                     Add Category
                                 </button>
