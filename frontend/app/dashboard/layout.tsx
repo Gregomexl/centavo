@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { authService } from '@/lib/auth-service';
 import type { User } from '@/lib/types';
+import { MobileNav } from '@/components/ui/mobile-nav';
 
 export default function DashboardLayout({
     children,
@@ -14,6 +15,7 @@ export default function DashboardLayout({
     const router = useRouter();
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     useEffect(() => {
         const initAuth = async () => {
@@ -54,35 +56,64 @@ export default function DashboardLayout({
 
     return (
         <div className="min-h-screen bg-gray-50">
+            {/* Mobile Navigation */}
+            <MobileNav
+                open={mobileMenuOpen}
+                onClose={() => setMobileMenuOpen(false)}
+                userName={user?.display_name}
+                onLogout={handleLogout}
+            />
+
             {/* Navigation */}
             <nav className="bg-white shadow-sm border-b border-gray-200">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
                         <div className="flex items-center space-x-8">
-                            <Link href="/dashboard" className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                            {/* Mobile menu button */}
+                            <button
+                                onClick={() => setMobileMenuOpen(true)}
+                                className="md:hidden p-2 rounded-md text-gray-600 hover:text-indigo-600 hover:bg-gray-50 active:bg-gray-100"
+                                aria-label="Open menu"
+                            >
+                                <svg
+                                    className="h-6 w-6"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M4 6h16M4 12h16M4 18h16"
+                                    />
+                                </svg>
+                            </button>
+
+                            <Link href="/dashboard" className="text-xl md:text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                                 Centavo
                             </Link>
 
                             <div className="hidden md:flex space-x-4">
-                                <Link href="/dashboard" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">
+                                <Link href="/dashboard" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50 active:bg-gray-100">
                                     Dashboard
                                 </Link>
-                                <Link href="/dashboard/transactions" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">
+                                <Link href="/dashboard/transactions" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50 active:bg-gray-100">
                                     Transactions
                                 </Link>
-                                <Link href="/dashboard/analytics" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">
+                                <Link href="/dashboard/analytics" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50 active:bg-gray-100">
                                     Analytics
                                 </Link>
-                                <Link href="/dashboard/categories" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">
+                                <Link href="/dashboard/categories" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50 active:bg-gray-100">
                                     Categories
                                 </Link>
-                                <Link href="/dashboard/settings" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50">
+                                <Link href="/dashboard/settings" className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50 active:bg-gray-100">
                                     Settings
                                 </Link>
                             </div>
                         </div>
 
-                        <div className="flex items-center space-x-4">
+                        <div className="hidden md:flex items-center space-x-4">
                             <span className="text-sm text-gray-600">
                                 {user?.display_name}
                             </span>
@@ -98,7 +129,7 @@ export default function DashboardLayout({
             </nav>
 
             {/* Main Content */}
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6 lg:py-8">
                 {children}
             </main>
         </div>
