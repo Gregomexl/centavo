@@ -11,7 +11,7 @@ interface GroupedTransactions {
 }
 
 function groupTransactionsByDate(transactions: Transaction[]): GroupedTransactions {
-    const sorted = [...transactions].sort((a, b) => 
+    const sorted = [...transactions].sort((a, b) =>
         new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime()
     );
 
@@ -28,7 +28,11 @@ function groupTransactionsByDate(transactions: Transaction[]): GroupedTransactio
 }
 
 function getDateLabel(dateStr: string): string {
-    const date = new Date(dateStr);
+    // Parse the date string as YYYY-MM-DD in local timezone
+    // Splitting and using Date constructor prevents UTC interpretation
+    const [year, month, day] = dateStr.split('T')[0].split('-').map(Number);
+    const date = new Date(year, month - 1, day); // month is 0-indexed
+
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
@@ -43,10 +47,10 @@ function getDateLabel(dateStr: string): string {
     } else if (dateOnly.getTime() === yesterdayOnly.getTime()) {
         return 'Yesterday';
     } else {
-        return date.toLocaleDateString('en-US', { 
-            weekday: 'short', 
-            month: 'short', 
-            day: 'numeric' 
+        return date.toLocaleDateString('en-US', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric'
         });
     }
 }
@@ -76,9 +80,8 @@ export default function TransactionList({ transactions }: TransactionListProps) 
                             <div key={transaction.id} className="p-4 md:p-6 hover:bg-gray-50 active:bg-gray-100">
                                 <div className="flex items-center justify-between gap-3">
                                     <div className="flex items-center space-x-3 md:space-x-4 min-w-0 flex-1">
-                                        <div className={`p-2 rounded-full flex-shrink-0 ${
-                                            transaction.type === 'expense' ? 'bg-red-100' : 'bg-green-100'
-                                        }`}>
+                                        <div className={`p-2 rounded-full flex-shrink-0 ${transaction.type === 'expense' ? 'bg-red-100' : 'bg-green-100'
+                                            }`}>
                                             <span className="text-lg md:text-xl">
                                                 {transaction.type === 'expense' ? '💸' : '💰'}
                                             </span>
@@ -88,13 +91,15 @@ export default function TransactionList({ transactions }: TransactionListProps) 
                                                 {transaction.description}
                                             </p>
                                             <p className="text-xs md:text-sm text-gray-500">
-                                                {new Date(transaction.transaction_date).toLocaleDateString()}
+                                                {(() => {
+                                                    const [year, month, day] = transaction.transaction_date.split('T')[0].split('-').map(Number);
+                                                    return new Date(year, month - 1, day).toLocaleDateString();
+                                                })()}
                                             </p>
                                         </div>
                                     </div>
-                                    <div className={`text-base md:text-lg font-semibold flex-shrink-0 ${
-                                        transaction.type === 'expense' ? 'text-red-600' : 'text-green-600'
-                                    }`}>
+                                    <div className={`text-base md:text-lg font-semibold flex-shrink-0 ${transaction.type === 'expense' ? 'text-red-600' : 'text-green-600'
+                                        }`}>
                                         {transaction.type === 'expense' ? '-' : '+'}${Number(transaction.amount).toFixed(2)}
                                     </div>
                                 </div>

@@ -21,6 +21,7 @@ export interface Category {
     color: string;
     type: TransactionType;
     is_system: boolean;
+    monthly_limit: number | null;
     created_at: string;
     updated_at: string;
 }
@@ -88,10 +89,12 @@ export interface CategoryCreate {
     icon?: string;
     color?: string;
     type: TransactionType;
+    monthly_limit?: number | null;
 }
 
 export interface CategoryUpdate {
     name?: string;
     icon?: string;
     color?: string;
+    monthly_limit?: number | null;
 }

@@ -2,17 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api-client';
-import type { Transaction } from '@/lib/types';
+import type { Transaction, Category } from '@/lib/types';
 import TransactionList from '@/components/dashboard/TransactionList';
-import {
-    LineChart,
-    Line,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    ResponsiveContainer,
-} from 'recharts';
+import BudgetWidget from '@/components/dashboard/BudgetWidget';
 
 interface SummaryData {
     total_expenses: number;
@@ -29,14 +21,19 @@ export default function DashboardPage() {
         transaction_count: 0,
     });
     const [recentTransactions, setRecentTransactions] = useState<Transaction[]>([]);
-    const [chartData, setChartData] = useState<any[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
+                // Fetch transactions
                 const response = await apiClient.get<any>('/api/v1/transactions?page=1&page_size=100');
                 const transactions = response.items || [];
+
+                // Fetch categories
+                const categoriesResponse = await apiClient.get<Category[]>('/api/v1/categories');
+                setCategories(categoriesResponse);
 
                 // Calculate summary
                 const totalExpenses = transactions
@@ -56,23 +53,6 @@ export default function DashboardPage() {
 
                 // Get recent 5 transactions
                 setRecentTransactions(transactions.slice(0, 5));
-
-                // Prepare mini chart data (last 7 days or simply last few transactions for sparkline effect)
-                // Group by day
-                const dailyData: Record<string, number> = {};
-                transactions.forEach((t: Transaction) => {
-                    const date = new Date(t.transaction_date).toLocaleDateString();
-                    // Net amount
-                    const amount = t.type === 'income' ? Number(t.amount) : -Number(t.amount);
-                    dailyData[date] = (dailyData[date] || 0) + amount;
-                });
-
-                const chart = Object.entries(dailyData)
-                    .map(([date, amount]) => ({ date: date.split('/')[0] + '/' + date.split('/')[1], amount })) // MM/DD
-                    .slice(-7) // Last 7 days with activity
-                    .reverse(); // Standard chron order might need sorting if keys not sorted.
-
-                setChartData(chart);
 
             } catch (error) {
                 console.error('Failed to fetch dashboard data:', error);
@@ -168,21 +148,8 @@ export default function DashboardPage() {
                     <TransactionList transactions={recentTransactions} />
                 </div>
 
-                {/* Mini Chart / Quick Stats */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
-                    <h2 className="text-lg md:text-xl font-semibold text-gray-900 mb-4">Activity</h2>
-                    <div className="h-56 md:h-64 lg:h-72">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <LineChart data={chartData}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                                <XAxis dataKey="date" tick={{ fontSize: 10 }} />
-                                <Tooltip />
-                                <Line type="monotone" dataKey="amount" stroke="#6366f1" strokeWidth={2} dot={false} />
-                            </LineChart>
-                        </ResponsiveContainer>
-                        <p className="text-center text-xs md:text-sm text-gray-500 mt-2">Daily Net Activity</p>
-                    </div>
-                </div>
+                {/* Budget Overview */}
+                <BudgetWidget categories={categories} transactions={recentTransactions} />
             </div>
         </div>
     );

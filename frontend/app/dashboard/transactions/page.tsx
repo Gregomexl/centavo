@@ -145,7 +145,10 @@ export default function TransactionsPage() {
                                         <div className="min-w-0 flex-1">
                                             <p className="font-semibold text-gray-900 text-sm md:text-base truncate">{transaction.description}</p>
                                             <p className="text-xs md:text-sm text-gray-600">
-                                                {new Date(transaction.transaction_date).toLocaleDateString()} • {transaction.type}
+                                                {(() => {
+                                                    const [year, month, day] = transaction.transaction_date.split('T')[0].split('-').map(Number);
+                                                    return new Date(year, month - 1, day).toLocaleDateString();
+                                                })()} • {transaction.type}
                                             </p>
                                         </div>
                                     </div>

@@ -15,6 +15,7 @@ class CategoryBase(pydantic.BaseModel):
     icon: str = pydantic.Field(default="📦", max_length=50)
     color: str = pydantic.Field(default="#6366f1", pattern=r"^#[0-9A-Fa-f]{6}$")
     type: TransactionType
+    monthly_limit: float | None = pydantic.Field(default=None, ge=0)
 
 
 class CategoryCreate(CategoryBase):
@@ -41,3 +42,4 @@ class CategoryUpdate(pydantic.BaseModel):
     name: str | None = pydantic.Field(None, min_length=1, max_length=50)
     icon: str | None = pydantic.Field(None, max_length=50)
     color: str | None = pydantic.Field(None, pattern=r"^#[0-9A-Fa-f]{6}$")
+    monthly_limit: float | None = pydantic.Field(None, ge=0)

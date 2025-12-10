@@ -1,8 +1,9 @@
 """Category model."""
 
 import uuid
+from decimal import Decimal
 
-from sqlalchemy import ForeignKey, String, UniqueConstraint
+from sqlalchemy import ForeignKey, Index, Numeric, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base, TimestampMixin
@@ -23,6 +24,9 @@ class Category(Base, TimestampMixin):
     icon: Mapped[str] = mapped_column(String(50), default="📦", nullable=False)
     color: Mapped[str] = mapped_column(String(7), default="#6366f1", nullable=False)
     type: Mapped[TransactionType] = mapped_column(nullable=False)
+    monthly_limit: Mapped[Decimal | None] = mapped_column(
+        Numeric(12, 2), nullable=True, default=None
+    )
     is_system: Mapped[bool] = mapped_column(default=False, nullable=False)
 
     # Relationships
