@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { apiClient } from '@/lib/api-client';
 import type { Transaction } from '@/lib/types';
+import TransactionList from '@/components/dashboard/TransactionList';
 import {
     LineChart,
     Line,
@@ -164,34 +165,7 @@ export default function DashboardPage() {
                         <h2 className="text-lg md:text-xl font-semibold text-gray-900">Recent Transactions</h2>
                         <a href="/dashboard/transactions" className="text-indigo-600 text-sm hover:underline active:underline">View All</a>
                     </div>
-                    <div className="divide-y divide-gray-200">
-                        {recentTransactions.length === 0 ? (
-                            <div className="p-6 md:p-8 text-center text-sm md:text-base text-gray-500">
-                                No transactions yet. Start tracking your expenses!
-                            </div>
-                        ) : (
-                            recentTransactions.map((transaction) => (
-                                <div key={transaction.id} className="p-4 md:p-6 hover:bg-gray-50 active:bg-gray-100">
-                                    <div className="flex items-center justify-between gap-3">
-                                        <div className="flex items-center space-x-3 md:space-x-4 min-w-0 flex-1">
-                                            <div className={`p-2 rounded-full flex-shrink-0 ${transaction.type === 'expense' ? 'bg-red-100' : 'bg-green-100'
-                                                }`}>
-                                                <span className="text-lg md:text-xl">{transaction.type === 'expense' ? '💸' : '💰'}</span>
-                                            </div>
-                                            <div className="min-w-0 flex-1">
-                                                <p className="font-medium text-gray-900 text-sm md:text-base truncate">{transaction.description}</p>
-                                                <p className="text-xs md:text-sm text-gray-500">{new Date(transaction.transaction_date).toLocaleDateString()}</p>
-                                            </div>
-                                        </div>
-                                        <div className={`text-base md:text-lg font-semibold flex-shrink-0 ${transaction.type === 'expense' ? 'text-red-600' : 'text-green-600'
-                                            }`}>
-                                            {transaction.type === 'expense' ? '-' : '+'}${Number(transaction.amount).toFixed(2)}
-                                        </div>
-                                    </div>
-                                </div>
-                            ))
-                        )}
-                    </div>
+                    <TransactionList transactions={recentTransactions} />
                 </div>
 
                 {/* Mini Chart / Quick Stats */}
