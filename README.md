@@ -1,104 +1,78 @@
-# Centavo - Personal Expense Tracker
+# Centavo 🪙
 
-A personal expense/income tracker with Telegram Bot and Web Dashboard.
+A personal finance tracker built for self-hosting. Track expenses, manage categories, and visualize your financial health with a modern dashboard and Telegram bot integration.
 
 ## Features
+- 📊 **Dashboard**: Real-time overview of expenses, income, and balance.
+- 💸 **Transaction Tracking**: Easy entry for expenses and income.
+- 🏷️ **Categories**: Custom categories with emoji support.
+- 🤖 **Telegram Bot**: Log expenses on-the-go via chat.
+- 🔒 **Self-Hosted**: Privacy-first, runs on your own hardware (Mac Mini, VPS, Raspberry Pi).
+- ☁️ **Cloudflare Tunnel**: Secure external access without port forwarding.
 
-- 🤖 **Telegram Bot**: Natural language input for expenses/incomes
-- 📊 **Web Dashboard**: Beautiful analytics and transaction management
-- 💰 **Multi-currency**: Support for different currencies (MXN default)
-- 📈 **Analytics**: Charts and reports by day/week/month/year
-- 🌐 **Bilingual**: English and Spanish support
+## 📚 Documentation
+- **[User Guide](docs/USER_GUIDE.md)**: How to use the dashboard and Telegram bot.
+- **[Deployment Guide](docs/MAC_MINI_DEPLOYMENT.md)**: Detailed self-hosting instructions.
 
 ## Tech Stack
+- **Frontend**: Next.js 16 (App Router), Tailwind CSS 4, Recharts
+- **Backend**: FastAPI (Python 3.12), SQLAlchemy, Alembic
+- **Database**: PostgreSQL
+- **Infrastructure**: Docker Compose, Cloudflare Tunnel
 
-### Backend
-- Python 3.14
-- FastAPI 0.124.0
-- SQLAlchemy 2.0.44 (async)
-- Pydantic 2.12.5
-- python-telegram-bot 22.5
-- PostgreSQL 16
-- Redis 7.x
+---
 
-### Frontend
-- Next.js 16
-- React 19.2
-- Tailwind CSS 4.0
-- TypeScript 5.x
-- shadcn/ui
-
-## Quick Start
+## 🚀 Getting Started
 
 ### Prerequisites
-- Python 3.14+
-- Node.js 18+
-- Docker & Docker Compose
-- uv (Python package manager)
+- [Docker & Docker Compose](https://www.docker.com/products/docker-desktop/)
+- [Git](https://git-scm.com/downloads)
+- A domain name (optional but recommended for external access)
+- A Cloudflare account (free)
 
-### Development
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/centavo.git
-   cd centavo
-   ```
-
-2. **Set up environment variables**
-   ```bash
-   cp backend/.env.example backend/.env
-   cp frontend/.env.example frontend/.env
-   # Edit the .env files with your configuration
-   ```
-
-3. **Start all services**
-   ```bash
-   just dev
-   ```
-
-   Or start services individually:
-   ```bash
-   just dev-backend  # Backend only
-   just dev-frontend # Frontend only
-   ```
-
-4. **Run migrations**
-   ```bash
-   just db-migrate
-   ```
-
-5. **Access the application**
-   - Backend API: http://localhost:8000
-   - API Docs: http://localhost:8000/docs
-   - Frontend: http://localhost:3000
-
-## Project Structure
-
-```
-centavo/
-├── backend/          # FastAPI backend
-├── frontend/         # Next.js frontend
-├── docker/           # Docker configurations
-├── docs/             # Documentation
-├── scripts/          # Utility scripts
-└── .github/          # CI/CD workflows
-```
-
-## Development Commands
-
+### 1. Clone the Repository
 ```bash
-just                 # Show all available commands
-just dev             # Start all services
-just test            # Run all tests
-just lint            # Run linters
-just format          # Format code
-just db-migrate      # Run database migrations
+git clone https://github.com/Gregomexl/centavo.git
+cd centavo
 ```
 
-## License
+### 2. Environment Setup
+Create the production environment variables:
 
-MIT License - see [LICENSE](LICENSE) for details.
+**Backend**:
+```bash
+cp backend/.env.example backend/.env.production
+# Edit backend/.env.production and set your secrets (DB password, Telegram Token, etc.)
+```
 
-## Author
+**Frontend**:
+```bash
+# Create .env.production for the frontend
+echo "NEXT_PUBLIC_API_URL=https://api.yourdomain.com" > frontend/.env.production
+```
 
-Gregory Onasis Gomez
+### 3. Deploy (Production)
+Run the application using the production compose file. This includes the database, redis, backend, frontend, bot, and the secure tunnel.
+
+**Important**: You need a `TUNNEL_TOKEN` from Cloudflare Zero Trust.
+1. Go to Cloudflare Zero Trust > Networks > Tunnels.
+2. Create a tunnel and copy the token.
+3. Edit `docker-compose.prod.yml` and paste your token in the `tunnel` service.
+4. Configure routes in Cloudflare:
+   - `app.yourdomain.com` -> `http://frontend:3000`
+   - `api.yourdomain.com` -> `http://backend:8000`
+
+**Start the stack:**
+```bash
+docker compose -f docker-compose.prod.yml up -d --build
+```
+
+Access your dashboard at `https://app.yourdomain.com`!
+
+### 4. Development
+To run locally for development:
+```bash
+docker compose -f docker/docker-compose.dev.yml up -d
+```
+- Frontend: http://localhost:3000
+- API Docs: http://localhost:8000/docs
