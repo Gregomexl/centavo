@@ -95,17 +95,17 @@ export default function AnalyticsPage() {
     const categoryData = getCategoryData();
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-6 md:space-y-8">
             <div>
-                <h1 className="text-3xl font-bold text-gray-900">Analytics</h1>
-                <p className="text-gray-600 mt-1">Visualize your financial trends</p>
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Analytics</h1>
+                <p className="text-sm md:text-base text-gray-600 mt-1">Visualize your financial trends</p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
                 {/* Income vs Expenses */}
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <h2 className="text-xl font-semibold mb-6 text-gray-900">Income vs Expenses</h2>
-                    <div className="h-80 w-full">
+                <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h2 className="text-lg md:text-xl font-semibold mb-4 md:mb-6 text-gray-900">Income vs Expenses</h2>
+                    <div className="h-64 md:h-72 lg:h-80 w-full">
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={monthlyData}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -124,9 +124,9 @@ export default function AnalyticsPage() {
                 </div>
 
                 {/* Category Breakdown */}
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <h2 className="text-xl font-semibold mb-6 text-gray-900">Expense Breakdown</h2>
-                    <div className="h-80 w-full flex justify-center">
+                <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h2 className="text-lg md:text-xl font-semibold mb-4 md:mb-6 text-gray-900">Expense Breakdown</h2>
+                    <div className="h-64 md:h-72 lg:h-80 w-full flex justify-center">
                         {categoryData.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
@@ -134,8 +134,8 @@ export default function AnalyticsPage() {
                                         data={categoryData}
                                         cx="50%"
                                         cy="50%"
-                                        innerRadius={60}
-                                        outerRadius={100}
+                                        innerRadius={50}
+                                        outerRadius={80}
                                         paddingAngle={5}
                                         dataKey="value"
                                     >
@@ -156,9 +156,9 @@ export default function AnalyticsPage() {
                 </div>
 
                 {/* Balance Trend */}
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 lg:col-span-2">
-                    <h2 className="text-xl font-semibold mb-6 text-gray-900">Balance Trend</h2>
-                    <div className="h-80 w-full">
+                <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-200 lg:col-span-2">
+                    <h2 className="text-lg md:text-xl font-semibold mb-4 md:mb-6 text-gray-900">Balance Trend</h2>
+                    <div className="h-64 md:h-72 lg:h-80 w-full">
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={monthlyData}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} />

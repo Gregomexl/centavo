@@ -106,14 +106,14 @@ export default function TransactionsPage() {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Transactions</h1>
-                    <p className="text-gray-600 mt-1">View and manage all your transactions</p>
+                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Transactions</h1>
+                    <p className="text-sm md:text-base text-gray-600 mt-1">View and manage all your transactions</p>
                 </div>
                 <button
                     onClick={() => setShowAddModal(true)}
-                    className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700 transition-all"
+                    className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700 active:from-indigo-800 active:to-purple-800 transition-all"
                 >
                     + Add Transaction
                 </button>
@@ -135,33 +135,33 @@ export default function TransactionsPage() {
                         </div>
                     ) : (
                         transactions.map((transaction) => (
-                            <div key={transaction.id} className="p-6 hover:bg-gray-50 flex items-center justify-between">
-                                <div className="flex items-center space-x-4">
-                                    <div className={`p-3 rounded-full ${transaction.type === 'expense' ? 'bg-red-100' : 'bg-green-100'
-                                        }`}>
-                                        <span className="text-2xl">{transaction.type === 'expense' ? '💸' : '💰'}</span>
-                                    </div>
-                                    <div>
-                                        <p className="font-semibold text-gray-900">{transaction.description}</p>
-                                        <div className="text-sm text-gray-500">
-                                            <p className="text-sm text-gray-600">
-                                                {new Date(transaction.transaction_date).toLocaleDateString()} •{' '}
-                                                {transaction.type}
+                            <div key={transaction.id} className="p-4 md:p-6 hover:bg-gray-50 active:bg-gray-100">
+                                <div className="flex items-center justify-between gap-3">
+                                    <div className="flex items-center space-x-3 md:space-x-4 min-w-0 flex-1">
+                                        <div className={`p-2 md:p-3 rounded-full flex-shrink-0 ${transaction.type === 'expense' ? 'bg-red-100' : 'bg-green-100'
+                                            }`}>
+                                            <span className="text-lg md:text-2xl">{transaction.type === 'expense' ? '💸' : '💰'}</span>
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="font-semibold text-gray-900 text-sm md:text-base truncate">{transaction.description}</p>
+                                            <p className="text-xs md:text-sm text-gray-600">
+                                                {new Date(transaction.transaction_date).toLocaleDateString()} • {transaction.type}
                                             </p>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="flex items-center space-x-4">
-                                    <div className={`text-lg font-semibold ${transaction.type === 'expense' ? 'text-red-600' : 'text-green-600'
-                                        }`}>
-                                        {transaction.type === 'expense' ? '-' : '+'}${Number(transaction.amount).toFixed(2)}
+                                    <div className="flex items-center space-x-2 md:space-x-4 flex-shrink-0">
+                                        <div className={`text-base md:text-lg font-semibold ${transaction.type === 'expense' ? 'text-red-600' : 'text-green-600'
+                                            }`}>
+                                            {transaction.type === 'expense' ? '-' : '+'}${Number(transaction.amount).toFixed(2)}
+                                        </div>
+                                        <button
+                                            onClick={() => handleDelete(transaction.id)}
+                                            className="text-red-600 hover:text-red-700 active:text-red-800 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
+                                            aria-label="Delete transaction"
+                                        >
+                                            🗑️
+                                        </button>
                                     </div>
-                                    <button
-                                        onClick={() => handleDelete(transaction.id)}
-                                        className="text-red-600 hover:text-red-700 p-2"
-                                    >
-                                        🗑️
-                                    </button>
                                 </div>
                             </div>
                         ))
@@ -171,17 +171,17 @@ export default function TransactionsPage() {
 
             {/* Add Transaction Modal */}
             {showAddModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                    <div className="bg-white rounded-2xl p-8 max-w-md w-full">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-6">Add Transaction</h2>
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" onClick={() => setShowAddModal(false)}>
+                    <div className="bg-white rounded-2xl p-4 sm:p-6 md:p-8 max-w-sm sm:max-w-md w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                        <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6">Add Transaction</h2>
 
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
+                                <label className="block text-sm md:text-base font-medium text-gray-700 mb-2">Type</label>
                                 <select
                                     value={formData.type}
                                     onChange={(e) => setFormData({ ...formData, type: e.target.value as 'expense' | 'income' })}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-gray-900 placeholder-gray-500"
+                                    className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-gray-900 placeholder-gray-500"
                                 >
                                     <option value="expense">Expense</option>
                                     <option value="income">Income</option>
@@ -189,36 +189,36 @@ export default function TransactionsPage() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Amount</label>
+                                <label className="block text-sm md:text-base font-medium text-gray-700 mb-2">Amount</label>
                                 <input
                                     type="number"
                                     step="0.01"
                                     value={formData.amount}
                                     onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
                                     required
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-gray-900 placeholder-gray-500"
+                                    className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-gray-900 placeholder-gray-500"
                                     placeholder="0.00"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                                <label className="block text-sm md:text-base font-medium text-gray-700 mb-2">Description</label>
                                 <input
                                     type="text"
                                     value={formData.description}
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                     required
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-gray-900 placeholder-gray-500"
+                                    className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-gray-900 placeholder-gray-500"
                                     placeholder="Lunch at restaurant"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Category (Optional)</label>
+                                <label className="block text-sm md:text-base font-medium text-gray-700 mb-2">Category (Optional)</label>
                                 <select
                                     value={formData.category_id}
                                     onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-gray-900 placeholder-gray-500"
+                                    className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-gray-900 placeholder-gray-500"
                                 >
                                     <option value="">No category</option>
                                     {categories
@@ -232,27 +232,27 @@ export default function TransactionsPage() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                                <label className="block text-sm md:text-base font-medium text-gray-700 mb-2">Date</label>
                                 <input
                                     type="date"
                                     value={formData.transaction_date}
                                     onChange={(e) => setFormData({ ...formData, transaction_date: e.target.value })}
                                     required
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-gray-900 placeholder-gray-500"
+                                    className="w-full px-3 py-2 md:px-4 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 text-gray-900 placeholder-gray-500"
                                 />
                             </div>
 
-                            <div className="flex space-x-4 pt-4">
+                            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4">
                                 <button
                                     type="button"
                                     onClick={() => setShowAddModal(false)}
-                                    className="flex-1 px-4 py-3 border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 text-gray-700"
+                                    className="w-full sm:flex-1 px-4 py-3 border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 active:bg-gray-100 text-gray-700"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-1 px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700"
+                                    className="w-full sm:flex-1 px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700 active:from-indigo-800 active:to-purple-800"
                                 >
                                     Add Transaction
                                 </button>
