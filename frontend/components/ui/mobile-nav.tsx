@@ -48,21 +48,19 @@ export function MobileNav({ open, onClose, userName, onLogout }: MobileNavProps)
     };
 
     return (
-        <>
+        <div className="md:hidden">
             {/* Overlay */}
             <div
-                className={`fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 md:hidden ${
-                    open ? 'opacity-100' : 'opacity-0 pointer-events-none'
-                }`}
+                className={`fixed inset-0 bg-black/50 z-[90] transition-opacity duration-300 ${open ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                    }`}
                 onClick={onClose}
                 aria-hidden="true"
             />
 
             {/* Mobile menu drawer */}
             <div
-                className={`fixed inset-y-0 left-0 w-64 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-in-out md:hidden ${
-                    open ? 'translate-x-0' : '-translate-x-full'
-                }`}
+                className="fixed inset-y-0 left-0 w-64 bg-white shadow-xl z-[100] transition-transform duration-300 ease-in-out"
+                style={{ transform: open ? 'translateX(0)' : 'translateX(-100%)' }}
             >
                 <div className="flex flex-col h-full">
                     {/* Header */}
@@ -79,18 +77,8 @@ export function MobileNav({ open, onClose, userName, onLogout }: MobileNavProps)
                             className="p-2 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 active:bg-gray-200"
                             aria-label="Close menu"
                         >
-                            <svg
-                                className="h-6 w-6"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M6 18L18 6M6 6l12 12"
-                                />
+                            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
                     </div>
@@ -110,11 +98,11 @@ export function MobileNav({ open, onClose, userName, onLogout }: MobileNavProps)
                                 <Link
                                     key={link.href}
                                     href={link.href}
-                                    className={`flex items-center space-x-3 px-3 py-3 rounded-lg text-base font-medium transition-colors ${
-                                        isActive(link.href)
-                                            ? 'bg-indigo-50 text-indigo-600'
-                                            : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600 active:bg-gray-100'
-                                    }`}
+                                    onClick={onClose}
+                                    className={`flex items-center space-x-3 px-3 py-3 rounded-lg text-base font-medium transition-colors ${isActive(link.href)
+                                        ? 'bg-indigo-50 text-indigo-600'
+                                        : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600 active:bg-gray-100'
+                                        }`}
                                 >
                                     <span className="text-xl">{link.icon}</span>
                                     <span>{link.label}</span>
@@ -132,24 +120,14 @@ export function MobileNav({ open, onClose, userName, onLogout }: MobileNavProps)
                             }}
                             className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-lg text-base font-medium text-red-600 hover:bg-red-50 active:bg-red-100 transition-colors"
                         >
-                            <svg
-                                className="h-5 w-5"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                                />
+                            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                             </svg>
                             <span>Logout</span>
                         </button>
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 }

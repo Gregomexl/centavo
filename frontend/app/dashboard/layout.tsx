@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { authService } from '@/lib/auth-service';
@@ -16,6 +16,10 @@ export default function DashboardLayout({
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+    const handleMobileMenuClose = useCallback(() => {
+        setMobileMenuOpen(false);
+    }, []);
 
     useEffect(() => {
         const initAuth = async () => {
@@ -59,7 +63,7 @@ export default function DashboardLayout({
             {/* Mobile Navigation */}
             <MobileNav
                 open={mobileMenuOpen}
-                onClose={() => setMobileMenuOpen(false)}
+                onClose={handleMobileMenuClose}
                 userName={user?.display_name}
                 onLogout={handleLogout}
             />
@@ -72,7 +76,7 @@ export default function DashboardLayout({
                             {/* Mobile menu button */}
                             <button
                                 onClick={() => setMobileMenuOpen(true)}
-                                className="md:hidden p-2 rounded-md text-gray-600 hover:text-indigo-600 hover:bg-gray-50 active:bg-gray-100"
+                                className="md:hidden p-2 rounded-md text-gray-600 hover:text-indigo-600 hover:bg-gray-50 active:bg-gray-100 relative z-50"
                                 aria-label="Open menu"
                             >
                                 <svg
